@@ -1,0 +1,12 @@
+*.suo
+ComicRackWebViewer/bin/Debug/
+ComicRackWebViewer/bin/
+ComicRackWebViewer/obj/
+ComicRackWebViewer/tablet/build
+*.crplugin
+*.user
+packages/
+ComicRackWebViewer/tablet/archive
+.sass-cache
+obj
+bin
