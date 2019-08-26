@@ -18,7 +18,7 @@ namespace ComicRackAPIServer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.35";
+    private const string VERSION = "1.39";
 
     public string InstallFolder { get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); } }
 

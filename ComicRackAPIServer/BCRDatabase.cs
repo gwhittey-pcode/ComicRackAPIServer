@@ -21,7 +21,7 @@ namespace BCR
     
     private SQLiteConnection mConnection;
     private string mFolder;
-    private const string DIRECTORY = "ComicRack BCR";
+    private const string DIRECTORY = "ComicRack_ComicRackAPIServer";
     
     private static Database instance = new Database();
     private int mVersion = 0;

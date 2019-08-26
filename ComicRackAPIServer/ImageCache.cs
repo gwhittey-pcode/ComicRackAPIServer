@@ -14,12 +14,13 @@ namespace BCR
 {
   public sealed class ImageCache //: GlobalSettings
     {
-        private const string DIRECTORY = "ComicRack BCR";
+        private const string DIRECTORY = "ComicRack_ComicRackAPIServer";
         
         private static string folder;
         private static string cache_folder;
         private static string thumbnail_folder;
-        
+        private static string sync_folder;
+
         public int cache_size { get; set; }
         
         // Image conversion settings
@@ -85,18 +86,23 @@ namespace BCR
           {
         	  Directory.CreateDirectory(thumbnail_folder);
           }
+          sync_folder = folder + "\\cache\\sync\\";
+          if (!Directory.Exists(sync_folder))
+          {
+        	  Directory.CreateDirectory(sync_folder);
+          }
           
         }
 
         
-        public MemoryStream LoadFromCache(string filename, bool thumbnail)
+        public MemoryStream LoadFromCache(string filename, bool thumbnail, bool sync_file)
         {
           if (cache_size <= 0)
             return null;
           
           try 
           {
-            byte[] content = File.ReadAllBytes((thumbnail ? thumbnail_folder : cache_folder) + filename);
+            byte[] content = File.ReadAllBytes((thumbnail ? thumbnail_folder : sync_file ? sync_folder : cache_folder) + filename);
             MemoryStream stream = new MemoryStream(content);
             return stream;
           }
@@ -106,7 +112,7 @@ namespace BCR
           }
         }
         
-        public void SaveToCache(string filename, MemoryStream image, bool thumbnail)
+        public void SaveToCache(string filename, MemoryStream image, bool thumbnail, bool sync_file)
         {
           if (cache_size <= 0)
             return;
@@ -115,7 +121,7 @@ namespace BCR
           {
             CheckCache();
 
-            using (FileStream file = new FileStream((thumbnail ? thumbnail_folder : cache_folder) + filename, FileMode.Create, FileAccess.Write))
+            using (FileStream file = new FileStream((thumbnail ? thumbnail_folder : sync_file ? sync_folder : cache_folder) + filename, FileMode.Create, FileAccess.Write))
             {
               image.WriteTo(file);
             }
@@ -149,7 +155,18 @@ namespace BCR
             File.Delete(fi.FullName);
           }
         }
-        
+        public void ClearSyncCache()
+        {
+            DirectoryInfo d = new DirectoryInfo(sync_folder);
+
+            FileInfo[] fis = d.GetFiles();
+
+            foreach (FileInfo fi in fis)
+            {
+                File.Delete(fi.FullName);
+            }
+        }
+
         private static int CompareFileDate(FileInfo x, FileInfo y)
         {
           if (x.CreationTimeUtc == y.CreationTimeUtc)
@@ -217,6 +234,21 @@ namespace BCR
           }
           
           return Size;
+        }
+        public long GetSyncCacheSize()
+        {
+            DirectoryInfo d = new DirectoryInfo(sync_folder);
+
+            long Size = 0;
+            // Add file sizes.
+            FileInfo[] fis = d.GetFiles();
+
+            foreach (FileInfo fi in fis)
+            {
+                Size += fi.Length;
+            }
+
+            return Size;
         }
     }
 }
