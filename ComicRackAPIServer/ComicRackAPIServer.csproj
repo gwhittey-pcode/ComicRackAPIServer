@@ -199,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="CHANGELOG.md" />
     <None Include="Package.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
