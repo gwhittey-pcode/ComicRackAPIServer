@@ -41,6 +41,7 @@ namespace ComicRackAPIServer
             this.tabPageWebServer = new System.Windows.Forms.TabPage();
             this.textBoxUrlBase = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.buttonStart = new System.Windows.Forms.Button();
             this.labelStatus = new System.Windows.Forms.Label();
             this.textBoxPort = new System.Windows.Forms.TextBox();
@@ -65,13 +66,13 @@ namespace ComicRackAPIServer
             this.buttonClearPageCache = new System.Windows.Forms.Button();
             this.tabPageAbout = new System.Windows.Forms.TabPage();
             this.webBrowserAbout = new System.Windows.Forms.WebBrowser();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.buttonClearSyncCache = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageWebServer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPageUsers.SuspendLayout();
             this.tabPageMisc.SuspendLayout();
             this.tabPageAbout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl
@@ -119,6 +120,16 @@ namespace ComicRackAPIServer
             this.label3.Size = new System.Drawing.Size(100, 17);
             this.label3.TabIndex = 5;
             this.label3.Text = "URL Base";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::ComicRackAPIServer.Properties.Resources.ComicRackAPIServer;
+            this.pictureBox1.Location = new System.Drawing.Point(158, 118);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(182, 142);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
             // 
             // buttonStart
             // 
@@ -301,6 +312,7 @@ namespace ComicRackAPIServer
             // 
             // tabPageMisc
             // 
+            this.tabPageMisc.Controls.Add(this.buttonClearSyncCache);
             this.tabPageMisc.Controls.Add(this.buttonClearThumbnailsCache);
             this.tabPageMisc.Controls.Add(this.labelCacheSize);
             this.tabPageMisc.Controls.Add(this.buttonClearPageCache);
@@ -364,15 +376,15 @@ namespace ComicRackAPIServer
             this.webBrowserAbout.TabIndex = 0;
             this.webBrowserAbout.Url = new System.Uri("", System.UriKind.Relative);
             // 
-            // pictureBox1
+            // buttonClearSyncCache
             // 
-            this.pictureBox1.Image = global::ComicRackAPIServer.Properties.Resources.ComicRackAPIServer;
-            this.pictureBox1.Location = new System.Drawing.Point(158, 118);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(182, 142);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
+            this.buttonClearSyncCache.Location = new System.Drawing.Point(8, 95);
+            this.buttonClearSyncCache.Name = "buttonClearSyncCache";
+            this.buttonClearSyncCache.Size = new System.Drawing.Size(140, 23);
+            this.buttonClearSyncCache.TabIndex = 3;
+            this.buttonClearSyncCache.Text = "Clear Sync Cache";
+            this.buttonClearSyncCache.UseVisualStyleBackColor = true;
+            this.buttonClearSyncCache.Click += new System.EventHandler(this.ButtonClearSyncCacheClick);
             // 
             // MainForm
             // 
@@ -386,16 +398,16 @@ namespace ComicRackAPIServer
             this.MinimumSize = new System.Drawing.Size(410, 310);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ComicRackAPIServer 1.35";
+            this.Text = "ComicRackAPIServer 1.39";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl.ResumeLayout(false);
             this.tabPageWebServer.ResumeLayout(false);
             this.tabPageWebServer.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPageUsers.ResumeLayout(false);
             this.tabPageUsers.PerformLayout();
             this.tabPageMisc.ResumeLayout(false);
             this.tabPageAbout.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
     }
@@ -428,6 +440,6 @@ namespace ComicRackAPIServer
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TextBox textBoxUrlBase;
     private System.Windows.Forms.Label label3;
-
-  }
+        private System.Windows.Forms.Button buttonClearSyncCache;
+    }
 }

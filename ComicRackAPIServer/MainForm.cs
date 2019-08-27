@@ -422,7 +422,7 @@ namespace ComicRackAPIServer
     
     public void UpdateCacheSizes()
     {
-      labelCacheSize.Text = String.Format("Used cache size: Pages {0} MB / Thumbnails {1} MB", (int)(ImageCache.Instance.GetPageCacheSize()/(1024*1024)), (int)(ImageCache.Instance.GetThumbnailsCacheSize()/(1024*1024)));
+      labelCacheSize.Text = String.Format("Used cache size: Pages {0} MB / Thumbnails {1} MB / Sync {2} MB ", (int)(ImageCache.Instance.GetPageCacheSize()/(1024*1024)), (int)(ImageCache.Instance.GetThumbnailsCacheSize()/(1024*1024)), (int)(ImageCache.Instance.GetSyncCacheSize() / (1024 * 1024)));
     }
     
     void ButtonClearThumbnailsCacheClick(object sender, EventArgs e)
@@ -437,8 +437,20 @@ namespace ComicRackAPIServer
       this.Cursor = cursor;
     }
 
-    
-    void TabControlSelectedIndexChanged(object sender, EventArgs e)
+
+        void ButtonClearSyncCacheClick(object sender, EventArgs e)
+        {
+            var cursor = this.Cursor;
+            this.Cursor = Cursors.WaitCursor;
+
+            ImageCache.Instance.ClearSyncCache();
+
+            UpdateCacheSizes();
+
+            this.Cursor = cursor;
+        }
+
+        void TabControlSelectedIndexChanged(object sender, EventArgs e)
     {
       if (tabControl.SelectedIndex == 2 && !cacheSizesInitialized)
       {
@@ -468,6 +480,9 @@ namespace ComicRackAPIServer
         {
 
         }
+
+  
+
     }
 
     // System.Resources.MissingManifestResourceException: Could not find any resources appropriate for the specified culture or the neutral culture.

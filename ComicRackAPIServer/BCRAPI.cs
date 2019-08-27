@@ -139,7 +139,7 @@ namespace BCR
               return null;
           }
         }
-        private static byte[] GetPageImageBytes(Guid id, int page)
+        public static byte[] GetPageImageBytes(Guid id, int page)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace BCR
         {
           // Check if original image is in the cache.
           string filename = string.Format("{0}-p{1}.jpg", id, page);
-          MemoryStream stream = ImageCache.Instance.LoadFromCache(filename, false);
+          MemoryStream stream = ImageCache.Instance.LoadFromCache(filename, false, false);
             
           if (stream == null)
           {
@@ -203,7 +203,7 @@ namespace BCR
             stream = new MemoryStream(bytes);
               
             // Always save the original page to the cache
-            ImageCache.Instance.SaveToCache(filename, stream, false);
+            ImageCache.Instance.SaveToCache(filename, stream, false, false);
           }
                     
           stream.Seek(0, SeekOrigin.Begin);
@@ -233,7 +233,7 @@ namespace BCR
             
             if (thumbnail)
             {
-              MemoryStream cachestream = ImageCache.Instance.LoadFromCache(filename, true);
+              MemoryStream cachestream = ImageCache.Instance.LoadFromCache(filename, true, false);
               // Cached thumbnails are assumed to be in the correct format and adhere to the size/format restrictions of the ipad.
               if (cachestream != null)
                 return response.FromStream(cachestream, MimeTypes.GetMimeType(".jpg"));
@@ -242,7 +242,7 @@ namespace BCR
             {
               // Check if a processed (rescaled and/or progressive) image is cached.
               string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
-              MemoryStream cachestream = ImageCache.Instance.LoadFromCache(processed_filename, false);
+              MemoryStream cachestream = ImageCache.Instance.LoadFromCache(processed_filename, false, false);
               if (cachestream != null)
                 return response.FromStream(cachestream, MimeTypes.GetMimeType(".jpg"));
             }
@@ -251,7 +251,7 @@ namespace BCR
             
             // Check if original image is in the cache.
             string org_filename = string.Format("{0}-p{1}.jpg", id, page);
-            stream = ImageCache.Instance.LoadFromCache(org_filename, false);
+            stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
               
             if (stream == null)
             {
@@ -265,7 +265,7 @@ namespace BCR
               stream = new MemoryStream(bytes);
                 
               // Always save the original page to the cache
-              ImageCache.Instance.SaveToCache(org_filename, stream, false);
+              ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
             }
                         
             stream.Seek(0, SeekOrigin.Begin);
@@ -491,14 +491,14 @@ namespace BCR
             // Always save thumbnails to the cache
             if (thumbnail)
             {
-              ImageCache.Instance.SaveToCache(filename, stream, true);
+              ImageCache.Instance.SaveToCache(filename, stream, true, false);
             }
             else
             if (processed)
             {
               // Store rescaled and/or progressive jpegs in the cache for now.
               string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
-              ImageCache.Instance.SaveToCache(processed_filename, stream, false);
+              ImageCache.Instance.SaveToCache(processed_filename, stream, false, false);
             }
             
             stream.Seek(0, SeekOrigin.Begin);
