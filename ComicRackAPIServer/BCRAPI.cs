@@ -139,7 +139,7 @@ namespace BCR
               return null;
           }
         }
-        private static byte[] GetPageImageBytes(Guid id, int page)
+        public static byte[] GetPageImageBytes(Guid id, int page)
         {
             try
             {

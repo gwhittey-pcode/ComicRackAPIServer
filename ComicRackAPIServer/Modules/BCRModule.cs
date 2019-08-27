@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Media.Imaging;
-using cYo.Projects.ComicRack.Engine;
+﻿using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Viewer;
 using Imazen.WebP;
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
 using Nancy.Security;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
 
 namespace BCR
 {
@@ -27,7 +27,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve a list of all (smart)lists.
-            Get["/Lists"] = x => {
+            Get["/Lists"] = x =>
+            {
 
                 try
                 {
@@ -46,7 +47,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve the contents of the specified list.
-            Get["/Lists/{id}"] = x => {
+            Get["/Lists/{id}"] = x =>
+            {
                 try
                 {
                     int depth = Request.Query.depth.HasValue ? int.Parse(Request.Query.depth) : -1;
@@ -66,7 +68,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // For OData compatibility, count should be $count, but I don't know how to parse the $ with Nancy....
-            Get["/Lists/{id}/Comics/count"] = x => {
+            Get["/Lists/{id}/Comics/count"] = x =>
+            {
                 try
                 {
                     BCRUser user = (BCRUser)this.Context.CurrentUser;
@@ -81,7 +84,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Return the comics of the specified list using OData to filter the comic properties and the list paging.
-            Get["/Lists/{id}/Comics"] = x => {
+            Get["/Lists/{id}/Comics"] = x =>
+            {
                 try
                 {
                     BCRUser user = (BCRUser)this.Context.CurrentUser;
@@ -100,7 +104,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Returns a list of all the comics as comic excerpts
-            Get["/Comics"] = x => {
+            Get["/Comics"] = x =>
+            {
                 try
                 {
                     BCRUser user = (BCRUser)this.Context.CurrentUser;
@@ -117,7 +122,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Return the comicbook info as an OData filtered bag of properties.
-            Get["/Comics/{id}"] = x => {
+            Get["/Comics/{id}"] = x =>
+            {
                 try
                 {
                     BCRUser user = (BCRUser)this.Context.CurrentUser;
@@ -137,7 +143,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve the specified page as a jpg file with the specified dimensions.
-            Get["/Comics/{id}/Pages/{page}"] = x => {
+            Get["/Comics/{id}/Pages/{page}"] = x =>
+            {
 
                 try
                 {
@@ -157,7 +164,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve the original size (in pixels) of the requested page.
-            Get["/Comics/{id}/Pages/{page}/size"] = x => {
+            Get["/Comics/{id}/Pages/{page}/size"] = x =>
+            {
                 try
                 {
                     int width = 0;
@@ -174,7 +182,8 @@ namespace BCR
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Get one property.
 
-            Get["/Comics/{id}/{property}"] = x => {
+            Get["/Comics/{id}/{property}"] = x =>
+            {
                 try
                 {
                     Guid comicId = new Guid(x.id);
@@ -227,7 +236,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Update properties of the specified comicbook for the current user
-            Post["/Comics/{id}/Progress"] = x => {
+            Post["/Comics/{id}/Progress"] = x =>
+            {
                 try
                 {
                     // Check if the comic exists.
@@ -283,7 +293,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Get the BCR settings.
-            Get["/Settings"] = x => {
+            Get["/Settings"] = x =>
+            {
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
@@ -297,7 +308,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Update the BCR settings.
-            Put["/Settings"] = x => {
+            Put["/Settings"] = x =>
+            {
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
@@ -313,7 +325,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Get a list of series
-            Get["/Series"] = x => {
+            Get["/Series"] = x =>
+            {
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
@@ -328,7 +341,8 @@ namespace BCR
                 }
             };
             // Get a list of series added in the last 2 days
-            Get["/Series/Recent/{days}"] = x => {
+            Get["/Series/Recent/{days}"] = x =>
+            {
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
@@ -346,7 +360,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve a list of all comics in the specified list
-            Get["/Series/{id}"] = x => {
+            Get["/Series/{id}"] = x =>
+            {
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
@@ -363,7 +378,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve the number of comics in the specified list
-            Get["/Series/{id}/count"] = x => {
+            Get["/Series/{id}/count"] = x =>
+            {
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
@@ -378,7 +394,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             //
-            Get["/Series/{id}/Volumes"] = x => {
+            Get["/Series/{id}/Volumes"] = x =>
+            {
                 try
                 {
                     return Response.AsOData(BCR.GetVolumesFromSeries(new Guid(x.id)), HttpStatusCode.OK);
@@ -391,7 +408,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             //
-            Get["/Series/{id}/Volumes/{volume}"] = x => {
+            Get["/Series/{id}/Volumes/{volume}"] = x =>
+            {
                 try
                 {
                     BCRUser user = (BCRUser)this.Context.CurrentUser;
@@ -407,7 +425,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Get a list of publishers
-            Get["/Publishers"] = x => {
+            Get["/Publishers"] = x =>
+            {
                 try
                 {
                     return Response.AsOData(BCR.GetPublishers(), HttpStatusCode.OK);
@@ -418,7 +437,8 @@ namespace BCR
                 }
             };
 
-            Get["/Publishers/{publisher}/Imprint/{imprint}/"] = x => {
+            Get["/Publishers/{publisher}/Imprint/{imprint}/"] = x =>
+            {
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
@@ -440,7 +460,8 @@ namespace BCR
             };
             ///////////////////////////////////////////////////////////////////////////////////////////////
             //
-            Get["/Log"] = x => {
+            Get["/Log"] = x =>
+            {
                 try
                 {
                     string severity = Request.Query.sev.HasValue ? Request.Query.sev : "";
@@ -458,7 +479,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Get the list of watched folders.
-            Get["/WatchFolder"] = x => {
+            Get["/WatchFolder"] = x =>
+            {
                 try
                 {
                     //return Response.AsOData(BCR.GetPublishers(), HttpStatusCode.OK);
@@ -478,7 +500,8 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Get list of all files in the folder 
-            Get["/WatchFolder/{folder}"] = x => {
+            Get["/WatchFolder/{folder}"] = x =>
+            {
                 try
                 {
                     return Response.AsRedirect("/tablet/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
@@ -490,10 +513,11 @@ namespace BCR
                 }
             };
 
-            
+
             ///////////////////////////////////////////////////////////////////////////////////////////////
-            // Retrieve a File for download
-            Get["/Comics/{id}/File"] = x => {
+            // Retrieve a Comic File for download
+            Get["/Comics/{id}/File"] = x =>
+            {
                 try
                 {
                     BCRUser user = (BCRUser)this.Context.CurrentUser;
@@ -516,9 +540,10 @@ namespace BCR
                     return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
                 }
             };
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            // convert and decress file size of jpeg save as Webp format
-            Get["/Comics/{id}/Sync"] = x => {
+
+
+            Get["/Comics/{id}/Sync"] = x =>
+            {
                 try
                 {
                     BCRUser user = (BCRUser)this.Context.CurrentUser;
@@ -535,10 +560,10 @@ namespace BCR
                     }
                     string tmpPath = System.IO.Path.GetTempPath();
                     var zipPath = comic.FilePath;
-
+                    int index = 0;
                     string extractPath = tmpPath + "\\" + comic.Id + "\\";
                     extractPath = Path.GetFullPath(extractPath);
-                                 
+
                     // Check if original image is in the cache.
 
                     string fileName = Path.GetFileName(zipPath);
@@ -547,46 +572,64 @@ namespace BCR
 
                     if (cbz_stream == null)
                     {
+
                         // If directory does not exist, create it. 
                         if (!Directory.Exists(extractPath))
                         {
                             Directory.CreateDirectory(extractPath);
                         }
-                        //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractPath);
                         using (ZipArchive archive = ZipFile.OpenRead(zipPath))
                         {
-
                             foreach (var entry in archive.Entries)
                             {
-                                if (entry.FullName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                                if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    string x_jpg = entry.FullName;
-                                    string webpFileName = x_jpg.Replace(".jpg", ".webp");
-                                    string combined = Path.Combine(extractPath, webpFileName);
-                                    using (var bitmap_stream = entry.Open())
-                                    {
-
-                                        Bitmap image = new Bitmap(bitmap_stream);
-
-                                        using (var saveImageStream = System.IO.File.Open(combined, FileMode.Create))
-                                        {
-                                            var encoder = new SimpleEncoder();
-                                            encoder.Encode(image, saveImageStream, 20);
-                                           
-                                        }
-                                    }
-                                }
-                                else
-                                {
-
                                     string combined = Path.Combine(extractPath, entry.FullName);
                                     entry.ExtractToFile(combined, true);
+
+
                                 }
                             }
+                        }
+                        //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractPath);
+                        // Check if original image is in the cache.
+                        for (int i = 0; i <= comic.PageCount - 1; i++)
+                        {
+                            MemoryStream stream = null;
+                            string org_filename = string.Format("{0}-p{1}.jpg", x.id, i);
+                            stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
+
+                            if (stream == null)
+                            {
+                                // Image is not in the cache, get it via ComicRack.
+                                var bytes = BCR.GetPageImageBytes(x.id, i);
+                                if (bytes == null)
+                                {
+                                    return HttpStatusCode.NotFound;
+                                }
+
+                                stream = new MemoryStream(bytes);
+
+                                // Always save the original page to the cache
+                                ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
+                            }
+
+                            stream.Seek(0, SeekOrigin.Begin);
+                            Bitmap image = new Bitmap(stream);
+                            var result = i.ToString().PadLeft(5, '0');
+                            string webpFileName = string.Format("P{0}.webp", result);
+                            string combined = Path.Combine(extractPath, webpFileName);
+                            using (var saveImageStream = System.IO.File.Open(combined, FileMode.Create))
+                            {
+                                var encoder = new SimpleEncoder();
+                                encoder.Encode(image, saveImageStream, 20);
+                            }
+                            stream.Dispose();
 
                         }
                         string zipName = tmpPath + "\\" + comic.Id + ".cbz";
                         //check if zipfile exists if so delete it.
+
                         try
                         {
                             if (File.Exists(zipName))
@@ -595,7 +638,6 @@ namespace BCR
                             }
                             //Creates a new, blank zip file to work with - the file will be
                             //finalized when the using statement completes
-
                             using (ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create))
                             {
                                 foreach (string file in Directory.GetFiles(extractPath))
@@ -608,11 +650,10 @@ namespace BCR
                         {
                             return Response.AsError(HttpStatusCode.InternalServerError, ex.ToString(), Request);
                         }
-                        
                         // Always save the original page to the cache
-                        var stream = new MemoryStream(File.ReadAllBytes(zipName));
-                        ImageCache.Instance.SaveToCache(fileName, stream, false, true);
-                        StreamResponse resp = new StreamResponse(() => stream, "application/zip");
+                        var resp_stream = new MemoryStream(File.ReadAllBytes(zipName));
+                        ImageCache.Instance.SaveToCache(fileName, resp_stream, false, true);
+                        StreamResponse resp = new StreamResponse(() => resp_stream, "application/zip");
                         return resp
                            .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
                            .AsAttachment(fileName, "application/zip");
@@ -624,15 +665,6 @@ namespace BCR
                            .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
                            .AsAttachment(fileName, "application/zip");
                     }
-
-
-
-                    //var file_req= new FileStream(zipName, FileMode.Open);
-                    //string file_attachment = Path.GetFileName(zipPath);
-
-                    //var response = new StreamResponse(() => file_req, MimeTypes.GetMimeType(file_attachment));
-
-                    //eturn response.AsAttachment(file_attachment);
                 }
                 catch (Exception e)
                 {
@@ -640,7 +672,6 @@ namespace BCR
                 }
             };
 
-         
 
         }
 
