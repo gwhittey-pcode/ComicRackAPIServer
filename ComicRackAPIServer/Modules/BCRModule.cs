@@ -560,7 +560,6 @@ namespace BCR
                     }
                     string tmpPath = System.IO.Path.GetTempPath();
                     var zipPath = comic.FilePath;
-                    int index = 0;
                     string extractPath = tmpPath + "\\" + comic.Id + "\\";
                     extractPath = Path.GetFullPath(extractPath);
 
