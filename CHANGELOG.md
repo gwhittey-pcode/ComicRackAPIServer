@@ -2,7 +2,7 @@
 
 ## [1.35]
 
-	- First public release
+  - First public release
 
 ## [1.36]
 
@@ -16,4 +16,3 @@
 ## [1.38]
 
   - Cleaned up Sync function to use less disc access for speed.
-
