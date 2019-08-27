@@ -116,6 +116,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\Program Files\ComicRack\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Imazen.WebP, Version=10.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Imazen.WebP.10.0.1\lib\net45\Imazen.WebP.dll</HintPath>
+    </Reference>
     <Reference Include="Linq2Rest, Version=4.1.0.0, Culture=neutral, PublicKeyToken=73a6c4cf8c87a30e, processorArchitecture=MSIL">
       <HintPath>..\packages\Linq2Rest.4.1.0.0\lib\Net45\Linq2Rest.dll</HintPath>
       <Private>True</Private>
@@ -148,6 +151,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
@@ -221,8 +226,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>IF NOT ($(ConfigurationName)) == (Debug) GOTO END
+cd $(ProjectDir)
+copy /y bin\debug\ComicRackAPIServer.dll C:\Users\gwhittey\projects\shared\ComicRackAPIServer
+copy /y bin\debug\Package.ini C:\Users\gwhittey\projects\shared\ComicRackAPIServer
+copy /y bin\debug\Program.py C:\Users\gwhittey\projects\shared\ComicRackAPIServer
+copy /y bin\debug\about.html C:\Users\gwhittey\projects\shared\ComicRackAPIServer
+
+:END</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

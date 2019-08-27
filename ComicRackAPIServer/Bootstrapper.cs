@@ -100,7 +100,7 @@ namespace ComicRackAPIServer
                         try
                         {
                           string apiKey = "";
-                          if (!nancyContext.Request.Cookies.TryGetValue("BCR_apiKey", out apiKey))
+                          if (!nancyContext.Request.Cookies.TryGetValue("API_apiKey", out apiKey))
                           {
                             apiKey = (string) nancyContext.Request.Query.ApiKey.Value;
                           }
