@@ -10,3 +10,5 @@ ComicRackWebViewer/tablet/archive
 .sass-cache
 obj
 bin
+# Visual Studio  cache/options directory
+.vs/
