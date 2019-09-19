@@ -100,7 +100,6 @@ namespace BCR
         progress.DateLastRead = System.DateTime.Now.ToString("s");
 
         Database.Instance.ExecuteNonQuery("INSERT INTO comic_progress (user_id, comic_id, current_page, last_page_read, date_last_read) VALUES(" + UserId + ", '" + progress.Id.ToString() + "', " + progress.CurrentPage + ", " + progress.LastPageRead + ", '" + progress.DateLastRead + "');");
-
         progress.DatabaseId = (int)Database.Instance.GetLastInsertRowId();
         comicProgress[comicBook.Id] = progress;
       }
@@ -114,8 +113,42 @@ namespace BCR
 
       }
     }
+        public void UpDateLastReadPage(ComicBook comicBook, int currentPage)
+        {
+            if (comicBook == null)
+                return;
 
-    public void UpdateSettings(UserSettings settings)
+            ComicProgress progress;
+            if (comicProgress.TryGetValue(comicBook.Id, out progress))
+            {
+                
+                progress.LastPageRead = currentPage;
+                progress.CurrentPage = currentPage;
+                progress.DateLastRead = System.DateTime.Now.ToString("s");
+                Database.Instance.ExecuteNonQuery("UPDATE comic_progress SET current_page = " + progress.CurrentPage + ", last_page_read = " + progress.LastPageRead + ", date_last_read = '" + progress.DateLastRead + "' WHERE id = " + progress.DatabaseId);
+            }
+            else
+            {
+                progress = new ComicProgress();
+                progress.Id = comicBook.Id;
+                progress.LastPageRead = currentPage;
+                progress.CurrentPage = currentPage;
+                progress.DateLastRead = System.DateTime.Now.ToString("s");
+                Console.WriteLine("This works.");
+                Database.Instance.ExecuteNonQuery("INSERT INTO comic_progress (user_id, comic_id, current_page, last_page_read, date_last_read) VALUES(" + UserId + ", '" + progress.Id.ToString() + "', " + progress.CurrentPage + ", " + progress.LastPageRead + ", '" + progress.DateLastRead + "');");
+                progress.DatabaseId = (int)Database.Instance.GetLastInsertRowId();
+                comicProgress[comicBook.Id] = progress;
+            }
+
+            if (settings.use_comicrack_progress)
+            {
+                // Save the progess to the ComicRack database as well
+                comicBook.CurrentPage = currentPage;
+                comicBook.LastPageRead = currentPage;
+
+            }
+        }
+        public void UpdateSettings(UserSettings settings)
     {
       this.settings = settings;
       settings.Save(this);

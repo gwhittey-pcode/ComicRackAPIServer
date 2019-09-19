@@ -260,7 +260,32 @@ namespace BCR
                     return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
                 }
             };
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            // Used to mark comic UserLastPagRead to 0
+            Post["/Comics/{id}/Mark_Unread"] = x =>
+            {
+                try
+                {
+                    // Check if the comic exists.
 
+                    Guid comicId = new Guid(x.id);
+                    ComicBook book = BCR.GetComics().FirstOrDefault(comic => comic.Id == comicId);
+                    if (book == null)
+                    {
+                        return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+                    }
+
+                    BCRUser user = (BCRUser)this.Context.CurrentUser;
+                    user.UpDateLastReadPage(book, int.Parse(this.Request.Form.CurrentPage));
+                    //if using multiple users do we update the master file with a users progress?
+                    //book.SetValue("CurrentPage", int.Parse(this.Request.Form.CurrentPage));
+                    return HttpStatusCode.OK;
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Update one property
             /*
