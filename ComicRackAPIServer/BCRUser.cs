@@ -134,7 +134,6 @@ namespace BCR
                 progress.LastPageRead = currentPage;
                 progress.CurrentPage = currentPage;
                 progress.DateLastRead = System.DateTime.Now.ToString("s");
-                Console.WriteLine("This works.");
                 Database.Instance.ExecuteNonQuery("INSERT INTO comic_progress (user_id, comic_id, current_page, last_page_read, date_last_read) VALUES(" + UserId + ", '" + progress.Id.ToString() + "', " + progress.CurrentPage + ", " + progress.LastPageRead + ", '" + progress.DateLastRead + "');");
                 progress.DatabaseId = (int)Database.Instance.GetLastInsertRowId();
                 comicProgress[comicBook.Id] = progress;
