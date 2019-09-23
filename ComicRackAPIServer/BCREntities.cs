@@ -127,6 +127,7 @@ namespace BCR
     public string Editor { get { return book.Editor; } }
 
     public string FilePath { get { return book.FilePath; } }
+    public long FileSize { get { return book.FileSize; } }
     public string Format { get { return book.Format; } }
 
     public string Genre { get { return book.Genre; } }

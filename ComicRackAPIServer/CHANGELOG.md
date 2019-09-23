@@ -12,3 +12,7 @@
 
 ##[1.38]
 	-Cleaned up Sync function to use less disc access for speed.
+##[1.40]
+	-Added in Mark Unread to Set LastPageRead to 0
+##[1.41]
+	- Added FileSize for Comics API
