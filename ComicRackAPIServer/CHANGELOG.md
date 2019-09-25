@@ -12,7 +12,19 @@
 
 ##[1.38]
 	-Cleaned up Sync function to use less disc access for speed.
+
 ##[1.40]
 	-Added in Mark Unread to Set LastPageRead to 0
+
 ##[1.41]
 	- Added FileSize for Comics API
+
+##[1.42]
+	-Removed FreeImage as was causing issues with 64bit installs of ComicRack.
+
+##[1.43]
+	- Removed Imazen.WebP replaced with own wrapper code and added in speed/quality selectors  to Plugin window 
+	  in ComicRack for webp compression
+
+##[1.44]
+	-change some function codes around
