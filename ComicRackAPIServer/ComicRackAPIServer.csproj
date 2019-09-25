@@ -110,9 +110,6 @@
     <Reference Include="cYo.Common">
       <HintPath>..\..\..\Program Files\ComicRack\cYo.Common.dll</HintPath>
     </Reference>
-    <Reference Include="FreeImageNET">
-      <HintPath>FreeImage\FreeImageNET.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\Program Files\ComicRack\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>

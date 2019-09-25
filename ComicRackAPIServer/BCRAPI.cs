@@ -5,7 +5,6 @@
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
-using FreeImageAPI;
 using Nancy;
 using System;
 using System.Collections.Generic;
@@ -276,30 +275,6 @@ namespace BCR
               int bitmap_width = (int)bitmap.Width;
               int bitmap_height = (int)bitmap.Height;
               
-            #elif USE_DIB
-            
-              FIBITMAP dib = FreeImage.LoadFromStream(stream);
-              if (dib == null)
-              {
-                Console.WriteLine("Loading bitmap failed. Aborting.");
-                // Check whether there was an error message.
-                return HttpStatusCode.InternalServerError;
-              }
-              int bitmap_width = (int)FreeImage.GetWidth(dib);
-              int bitmap_height = (int)FreeImage.GetHeight(dib);
-            
-            #elif USE_FIB
-            
-              FreeImageBitmap fib = FreeImageBitmap.FromStream(stream, false);
-              if (fib == null)
-              {
-                Console.WriteLine("Loading bitmap failed. Aborting.");
-                // Check whether there was an error message.
-                return HttpStatusCode.InternalServerError;
-              }
-                                      
-              int bitmap_width = (int)fib.Width;
-              int bitmap_height = (int)fib.Height;
             #endif
             
             if (ImageCache.Instance.use_max_dimension)
@@ -383,16 +358,10 @@ namespace BCR
                 FREE_IMAGE_FILTER resizer = FREE_IMAGE_FILTER.FILTER_LANCZOS3;
                 
                 #if USE_FIB
-                  fib.Rescale(result_width, result_height, resizer);
+                  //
                 #else
                               
-                  FIBITMAP newdib = FreeImage.Rescale(dib, result_width, result_height, resizer);
-                  if (!newdib.IsNull)
-                  {
-                    FreeImage.Unload(dib);
-                    dib.SetNull();
-                    dib = newdib;
-                  }
+                 //
                 #endif
               #elif USE_GDI
                 Bitmap resizedBitmap = Resize(bitmap, result_width, result_height);
@@ -411,37 +380,24 @@ namespace BCR
               // Convert image to progressive jpeg
               
               // FreeImage source code reveals that lower 7 bits of the FREE_IMAGE_SAVE_FLAGS enum are used for low-level quality control.
-              FREE_IMAGE_SAVE_FLAGS quality = (FREE_IMAGE_SAVE_FLAGS)ImageCache.Instance.progressive_jpeg_quality;
-              FREE_IMAGE_SAVE_FLAGS flags = FREE_IMAGE_SAVE_FLAGS.JPEG_SUBSAMPLING_444 | FREE_IMAGE_SAVE_FLAGS.JPEG_PROGRESSIVE | quality;
+             // FREE_IMAGE_SAVE_FLAGS quality = (FREE_IMAGE_SAVE_FLAGS)ImageCache.Instance.progressive_jpeg_quality;
+              //FREE_IMAGE_SAVE_FLAGS flags = FREE_IMAGE_SAVE_FLAGS.JPEG_SUBSAMPLING_444 | FREE_IMAGE_SAVE_FLAGS.JPEG_PROGRESSIVE | quality;
 
               #if USE_DIB || USE_FIB
                 
-                stream.Dispose();
-                stream = new MemoryStream();
-                
-                #if USE_FIB
-                
-                  fib.Save(stream, FREE_IMAGE_FORMAT.FIF_JPEG, flags);
-                  fib.Dispose();
-                  
-                #else
-                
-                  FreeImage.SaveToStream(dib, stream, FREE_IMAGE_FORMAT.FIF_JPEG, flags);
-                  FreeImage.Unload(dib);
-                  dib.SetNull();
-                 
-                #endif
+              //
                 
               #else
-                FIBITMAP dib = FreeImage.CreateFromBitmap(bitmap);
-                bitmap.Dispose();
-                bitmap = null;
+                //FIBITMAP dib = FreeImage.CreateFromBitmap(bitmap);
+                //bitmap.Dispose();
+                //bitmap = null;
                 stream.Dispose();
                 stream = new MemoryStream();
-                
-                FreeImage.SaveToStream(dib, stream, FREE_IMAGE_FORMAT.FIF_JPEG, flags);
-                FreeImage.Unload(dib);
-                dib.SetNull();
+                bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                bitmap = null;
+                //FreeImage.SaveToStream(dib, stream, FREE_IMAGE_FORMAT.FIF_JPEG, flags);
+                //FreeImage.Unload(dib);
+                // dib.SetNull();
                 
               #endif              
             }
@@ -452,19 +408,7 @@ namespace BCR
               
               #if USE_DIB || USE_FIB
               
-                FREE_IMAGE_SAVE_FLAGS flags = FREE_IMAGE_SAVE_FLAGS.JPEG_SUBSAMPLING_444 | FREE_IMAGE_SAVE_FLAGS.JPEG_OPTIMIZE | FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYNORMAL;
                 
-                stream.Dispose();  
-                stream = new MemoryStream();
-                
-                #if USE_FIB
-                  fib.Save(stream, FREE_IMAGE_FORMAT.FIF_JPEG, flags);
-                  fib.Dispose();
-                #else
-                  FreeImage.SaveToStream(dib, stream, FREE_IMAGE_FORMAT.FIF_JPEG, flags);
-                  FreeImage.Unload(dib);
-                  dib.SetNull();
-                #endif
               #else
               
                 stream = GetBytesFromImage(bitmap);
@@ -474,10 +418,9 @@ namespace BCR
             }
             
             #if USE_DIB
-              FreeImage.Unload(dib);
-              dib.SetNull();
+             
             #elif USE_FIB
-              fib.Dispose();
+             
             #elif USE_GDI
 
             if (bitmap != null)
