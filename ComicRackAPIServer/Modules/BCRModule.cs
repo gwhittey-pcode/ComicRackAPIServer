@@ -13,7 +13,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-
+using WebPWrapper;
 namespace BCR
 {
     public class BCRModule : NancyModule
@@ -541,7 +541,7 @@ namespace BCR
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve a Comic File for download
-            Get["/Comics/{id}/File"] = x =>
+            Get["/Comics/{id}/Sync/File"] = x =>
             {
                 try
                 {
@@ -648,6 +648,151 @@ namespace BCR
                                 var encoder = new SimpleEncoder();
                                 encoder.Encode(image, saveImageStream, 20);
                             }
+                            stream.Dispose();
+
+                        }
+                        string zipName = tmpPath + "\\" + comic.Id + ".cbz";
+                        //check if zipfile exists if so delete it.
+
+                        try
+                        {
+                            if (File.Exists(zipName))
+                            {
+                                File.Delete(zipName);
+                            }
+                            //Creates a new, blank zip file to work with - the file will be
+                            //finalized when the using statement completes
+                            using (ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create))
+                            {
+                                foreach (string file in Directory.GetFiles(extractPath))
+                                {
+                                    newFile.CreateEntryFromFile(file, System.IO.Path.GetFileName(file));
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return Response.AsError(HttpStatusCode.InternalServerError, ex.ToString(), Request);
+                        }
+                        // Always save the original page to the cache
+                        var resp_stream = new MemoryStream(File.ReadAllBytes(zipName));
+                        ImageCache.Instance.SaveToCache(fileName, resp_stream, false, true);
+                        StreamResponse resp = new StreamResponse(() => resp_stream, "application/zip");
+                        return resp
+                           .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
+                           .AsAttachment(fileName, "application/zip");
+                    }
+                    else
+                    {
+                        StreamResponse resp = new StreamResponse(() => cbz_stream, "application/zip");
+                        return resp
+                           .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
+                           .AsAttachment(fileName, "application/zip");
+                    }
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
+
+            Get["/Comics/{id}/Sync/webp"] = x =>
+            {
+                try
+                {
+                    BCRUser user = (BCRUser)this.Context.CurrentUser;
+                    Comic comic = BCR.GetComic(user, new Guid(x.id));
+                    int width = Request.Query.width.HasValue ? int.Parse(Request.Query.width) : -1;
+                    int height = Request.Query.height.HasValue ? int.Parse(Request.Query.height) : -1;
+
+                    int maxWidth = Request.Query.maxWidth.HasValue ? int.Parse(Request.Query.maxWidth) : -1;
+                    int maxHeight = Request.Query.maxHeight.HasValue ? int.Parse(Request.Query.maxHeight) : -1;
+
+                    if (comic == null)
+                    {
+                        return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+                    }
+                    string tmpPath = System.IO.Path.GetTempPath();
+                    var zipPath = comic.FilePath;
+                    string extractPath = tmpPath + "\\" + comic.Id + "\\";
+                    extractPath = Path.GetFullPath(extractPath);
+
+                    // Check if original image is in the cache.
+
+                    string fileName = Path.GetFileName(zipPath);
+                    MemoryStream cbz_stream = null;
+                    cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
+
+                    if (cbz_stream == null)
+                    {
+
+                        // If directory does not exist, create it. 
+                        if (!Directory.Exists(extractPath))
+                        {
+                            Directory.CreateDirectory(extractPath);
+                        }
+                        using (ZipArchive archive = ZipFile.OpenRead(zipPath))
+                        {
+                            foreach (var entry in archive.Entries)
+                            {
+                                if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    string combined = Path.Combine(extractPath, entry.FullName);
+                                    entry.ExtractToFile(combined, true);
+
+
+                                }
+                            }
+                        }
+                        //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractPath);
+                        // Check if original image is in the cache.
+                        for (int i = 0; i <= comic.PageCount - 1; i++)
+                        {
+                            MemoryStream stream = null;
+                            string org_filename = string.Format("{0}-p{1}.jpg", x.id, i);
+                            stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
+
+                            if (stream == null)
+                            {
+                                // Image is not in the cache, get it via ComicRack.
+                                var bytes = BCR.GetPageImageBytes(x.id, i);
+                                if (bytes == null)
+                                {
+                                    return HttpStatusCode.NotFound;
+                                }
+
+                                stream = new MemoryStream(bytes);
+
+                                // Always save the original page to the cache
+                                ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
+                            }
+
+                            stream.Seek(0, SeekOrigin.Begin);
+                            Bitmap image = new Bitmap(stream);
+
+                            var result = i.ToString().PadLeft(5, '0');
+                            string webpFileName = string.Format("P{0}.webp", result);
+                            string combined = Path.Combine(extractPath, webpFileName);
+                            byte[] rawWebP;
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                stream.CopyTo(memoryStream);
+                                rawWebP = memoryStream.ToArray();
+                            }
+
+                            Int32 webpquality = Database.Instance.GlobalSettings.webp_quality;
+                            Int32 webpspeed = Database.Instance.GlobalSettings.webp_speed;
+                            using (WebP webp = new WebP())
+                            {
+                                rawWebP = webp.EncodeLossy(image, webpquality, webpspeed);
+                            }
+                            File.WriteAllBytes(combined, rawWebP);
+
+                            /*
+                            using (WebP webp = new WebP()) {
+                                webp.Save(image, combined, 80);
+                            }*/
+
                             stream.Dispose();
 
                         }
