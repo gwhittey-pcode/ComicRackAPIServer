@@ -24,7 +24,7 @@ namespace BCR
       nancy_diagnostics_password = "diagnostics";
       webserver_port = 8080;
       url_base = "tablet";
-      webp_quality = 35;
+      webp_quality = 20;
       webp_speed = 5;
     }
     
@@ -47,7 +47,7 @@ namespace BCR
       nancy_request_tracing = GetBoolean("nancy_request_tracing", false);
       nancy_diagnostics_password = GetString("nancy_diagnostics_password", "diagnostics");
       url_base = GetString("url_base", "tablet");
-      webp_quality = GetInt32("webp_quality", 35);
+      webp_quality = GetInt32("webp_quality", 20);
       webp_speed = GetInt32("webp_speed", 5);
         }
     
