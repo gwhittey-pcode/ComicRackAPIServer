@@ -6,6 +6,7 @@ using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
 using Nancy;
+using Nancy.Responses;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,9 +14,8 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using Imazen.WebP;
 using System.IO.Compression;
-using WebPWrapper;
-using Nancy.Responses;
 
 
 namespace BCR
@@ -535,262 +535,118 @@ namespace BCR
             }
             return comics.AsSeries();
         }
-
         public static Response GetSyncWebp(Comic comic, Guid id, IResponseFormatter response)
         {
-            try
-            {
-                string tmpPath = System.IO.Path.GetTempPath();
-                var zipPath = comic.FilePath;
-                string extractPath = tmpPath + "\\" + comic.Id + "\\";
-                extractPath = Path.GetFullPath(extractPath);
-                // Check if original image is in the cache
-                string fileName = Path.GetFileName(zipPath);
-                MemoryStream cbz_stream = null;
-                cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
-
-                if (cbz_stream == null)
-                {
-
-                    // If directory does not exist, create it. 
-                    if (!Directory.Exists(extractPath))
-                    {
-                        Directory.CreateDirectory(extractPath);
-                    }
-                    using (ZipArchive archive = ZipFile.OpenRead(zipPath))
-                    {
-                        foreach (var entry in archive.Entries)
-                        {
-                            if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-                            {
-                                string combined = Path.Combine(extractPath, entry.FullName);
-                                entry.ExtractToFile(combined, true);
-                            }
-                        }
-                    }
-                    //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractPath);
-                    // Check if original image is in the cache.
-                    for (int i = 0; i <= comic.PageCount - 1; i++)
-                    {
-                        MemoryStream stream = null;
-                        string org_filename = string.Format("{0}-p{1}.jpg", id, i);
-                        stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
-
-                        if (stream == null)
-                        {
-                            // Image is not in the cache, get it via ComicRack.
-                            var bytes = BCR.GetPageImageBytes(id, i);
-                            if (bytes == null)
-                            {
-                                return HttpStatusCode.NotFound;
-                            }
-
-                            stream = new MemoryStream(bytes);
-
-                            // Always save the original page to the cache
-                            ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
-                        }
-
-                        stream.Seek(0, SeekOrigin.Begin);
-                        Bitmap image = new Bitmap(stream);
-
-                        var result = i.ToString().PadLeft(5, '0');
-                        string webpFileName = string.Format("P{0}.webp", result);
-                        string combined = Path.Combine(extractPath, webpFileName);
-                        byte[] rawWebP;
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            stream.CopyTo(memoryStream);
-                            rawWebP = memoryStream.ToArray();
-                        }
-
-                        Int32 webpquality = Database.Instance.GlobalSettings.webp_quality;
-                        Int32 webpspeed = Database.Instance.GlobalSettings.webp_speed;
-                        using (WebP webp = new WebP())
-                        {
-                            rawWebP = webp.EncodeLossy(image, webpquality, webpspeed);
-                        }
-                        File.WriteAllBytes(combined, rawWebP);
-
-                        /*
-                        using (WebP webp = new WebP()) {
-                            webp.Save(image, combined, 80);
-                        }*/
-
-                        stream.Dispose();
-
-                    }
-                    string zipName = tmpPath + "\\" + comic.Id + ".cbz";
-                    //check if zipfile exists if so delete it.
-
-                    try
-                    {
-                        if (File.Exists(zipName))
-                        {
-                            File.Delete(zipName);
-                        }
-                        //Creates a new, blank zip file to work with - the file will be
-                        //finalized when the using statement completes
-                        using (ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create))
-                        {
-                            foreach (string file in Directory.GetFiles(extractPath))
-                            {
-                                newFile.CreateEntryFromFile(file, System.IO.Path.GetFileName(file));
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        return HttpStatusCode.NotFound;
-                    }
-                    // Always save the original page to the cache
-                    var resp_stream = new MemoryStream(File.ReadAllBytes(zipName));
-                    ImageCache.Instance.SaveToCache(fileName, resp_stream, false, true);
-                    StreamResponse resp = new StreamResponse(() => resp_stream, "application/zip");
-                    return resp
-                       .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
-                       .AsAttachment(fileName, "application/zip");
-                }
-                else
-                {
-                    StreamResponse resp = new StreamResponse(() => cbz_stream, "application/zip");
-                    return resp
-                       .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
-                       .AsAttachment(fileName, "application/zip");
-                }
             
-            }
-            catch//(Exception e)
-            {
-                //MessageBox.Show(e.ToString());
-                return null;
-            }
-        }
+            string tmpPath = System.IO.Path.GetTempPath();
+            var zipPath = comic.FilePath;
+            string extractPath = tmpPath + "\\" + comic.Id + "\\";
+            extractPath = Path.GetFullPath(extractPath);
 
-        public static Response GetSyncWebpFromStream(Comic comic, Guid id, IResponseFormatter response)
-        {
-            try
-            {
-                string tmpPath = System.IO.Path.GetTempPath();
-                var zipPath = comic.FilePath;
-                string extractPath = tmpPath + "\\" + comic.Id + "\\";
-                extractPath = Path.GetFullPath(extractPath);
-                // Check if original image is in the cache
-                string fileName = Path.GetFileName(zipPath);
-                MemoryStream cbz_stream = null;
-                cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
+            // Check if original image is in the cache.
 
-                if (cbz_stream == null)
+            string fileName = Path.GetFileName(zipPath);
+            MemoryStream cbz_stream = null;
+            cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
+
+            if (cbz_stream == null)
+            {
+
+                // If directory does not exist, create it. 
+                if (!Directory.Exists(extractPath))
                 {
-
-                    // If directory does not exist, create it. 
-                    if (!Directory.Exists(extractPath))
-                    {
-                        Directory.CreateDirectory(extractPath);
-                    }
-                    using (ZipArchive archive = ZipFile.OpenRead(zipPath))
-                    {
-                        foreach (var entry in archive.Entries)
-                        {
-                            if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-                            {
-                                string combined = Path.Combine(extractPath, entry.FullName);
-                                entry.ExtractToFile(combined, true);
-                            }
-                        }
-                    }
-                    //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractPath);
-                    // Check if original image is in the cache.
-                    for (int i = 0; i <= comic.PageCount - 1; i++)
-                    {
-                        MemoryStream stream = null;
-                        string org_filename = string.Format("{0}-p{1}.jpg", id, i);
-                        stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
-
-                        if (stream == null)
-                        {
-                            // Image is not in the cache, get it via ComicRack.
-                            var bytes = BCR.GetPageImageBytes(id, i);
-                            if (bytes == null)
-                            {
-                                return HttpStatusCode.NotFound;
-                            }
-                            stream = new MemoryStream(bytes);
-                            // save the original page to the cache
-                            ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
-                        }
-
-                        stream.Seek(0, SeekOrigin.Begin);
-                        Bitmap image = new Bitmap(stream);
-                        var page_num = i.ToString().PadLeft(5, '0');
-                        string webpFileName = string.Format("P{0}.webp", page_num);
-                        string combined = Path.Combine(extractPath, webpFileName);
-                        byte[] rawWebP;
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            stream.CopyTo(memoryStream);
-                            rawWebP = memoryStream.ToArray();
-                        }
-
-                        Int32 webpquality = Database.Instance.GlobalSettings.webp_quality;
-                        Int32 webpspeed = Database.Instance.GlobalSettings.webp_speed;
-                        using (WebP webp = new WebP())
-                        {
-                            rawWebP = webp.EncodeLossy(image, webpquality, webpspeed);
-                        }
-                        File.WriteAllBytes(combined, rawWebP);
-                        stream.Dispose();
-
-                    }
-                    string zipName = tmpPath + "\\" + comic.Id + ".cbz";
-                    //check if zipfile exists if so delete it.
-
-                    try
-                    {
-                        if (File.Exists(zipName))
-                        {
-                            File.Delete(zipName);
-                        }
-                        //Creates a new, blank zip file to work with - the file will be
-                        //finalized when the using statement completes
-                        using (ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create))
-                        {
-                            foreach (string file in Directory.GetFiles(extractPath))
-                            {
-                                newFile.CreateEntryFromFile(file, System.IO.Path.GetFileName(file));
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        return HttpStatusCode.NotFound;
-                    }
-                    // Always save the original page to the cache
-                    var resp_stream = new MemoryStream(File.ReadAllBytes(zipName));
-                    ImageCache.Instance.SaveToCache(fileName, resp_stream, false, true);
-                    StreamResponse resp = new StreamResponse(() => resp_stream, "application/zip");
-                    return resp
-                       .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
-                       .AsAttachment(fileName, "application/zip");
+                    Directory.CreateDirectory(extractPath);
                 }
-                else
+                using (ZipArchive archive = ZipFile.OpenRead(zipPath))
                 {
-                    StreamResponse resp = new StreamResponse(() => cbz_stream, "application/zip");
-                    return resp
-                       .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
-                       .AsAttachment(fileName, "application/zip");
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string combined = Path.Combine(extractPath, entry.FullName);
+                            entry.ExtractToFile(combined, true);
+
+
+                        }
+                    }
                 }
+                //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractPath);
+                // Check if original image is in the cache.
+                for (int i = 0; i <= comic.PageCount - 1; i++)
+                {
+                    MemoryStream stream = null;
+                    string org_filename = string.Format("{0}-p{1}.jpg", id, i);
+                    stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
 
+                    if (stream == null)
+                    {
+                        // Image is not in the cache, get it via ComicRack.
+                        var bytes = BCR.GetPageImageBytes(id, i);
+                        if (bytes == null)
+                        {
+                            return HttpStatusCode.NotFound;
+                        }
+
+                        stream = new MemoryStream(bytes);
+
+                        // Always save the original page to the cache
+                        ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
+                    }
+
+                    stream.Seek(0, SeekOrigin.Begin);
+                    Bitmap image = new Bitmap(stream);
+                    var result = i.ToString().PadLeft(5, '0');
+                    string webpFileName = string.Format("P{0}.webp", result);
+                    string combined = Path.Combine(extractPath, webpFileName);
+                    Int32 webpquality = Database.Instance.GlobalSettings.webp_quality;
+                    using (var saveImageStream = System.IO.File.Open(combined, FileMode.Create))
+                    {
+                        var encoder = new SimpleEncoder();
+                        encoder.Encode(image, saveImageStream, webpquality);
+                    }
+                    stream.Dispose();
+
+                }
+                string zipName = tmpPath + "\\" + comic.Id + ".cbz";
+                //check if zipfile exists if so delete it.
+
+                try
+                {
+                    if (File.Exists(zipName))
+                    {
+                        File.Delete(zipName);
+                    }
+                    //Creates a new, blank zip file to work with - the file will be
+                    //finalized when the using statement completes
+                    using (ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create))
+                    {
+                        foreach (string file in Directory.GetFiles(extractPath))
+                        {
+                            newFile.CreateEntryFromFile(file, System.IO.Path.GetFileName(file));
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    return HttpStatusCode.NotFound;
+                }
+                // Always save the original page to the cache
+                var resp_stream = new MemoryStream(File.ReadAllBytes(zipName));
+                ImageCache.Instance.SaveToCache(fileName, resp_stream, false, true);
+                StreamResponse resp = new StreamResponse(() => resp_stream, "application/zip");
+                return resp
+                   .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
+                   .AsAttachment(fileName, "application/zip");
             }
-            catch//(Exception e)
+            else
             {
-                //MessageBox.Show(e.ToString());
-                return null;
+                StreamResponse resp = new StreamResponse(() => cbz_stream, "application/zip");
+                return resp
+                   .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
+                   .AsAttachment(fileName, "application/zip");
             }
+
         }
-
-
-
     }
 
 }

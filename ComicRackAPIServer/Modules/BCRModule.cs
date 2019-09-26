@@ -1,18 +1,16 @@
 ﻿using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Viewer;
+
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
 using Nancy.Security;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using WebPWrapper;
+
 namespace BCR
 {
     public class BCRModule : NancyModule
@@ -539,7 +537,7 @@ namespace BCR
 
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
-            // Retrieve a Comic File for download Original File
+            // Retrieve a Comic File for download
             Get["/Comics/{id}/Sync/File"] = x =>
             {
                 try
@@ -554,7 +552,9 @@ namespace BCR
                     var zipPath = comic.FilePath;
                     var file = new FileStream(zipPath, FileMode.Open);
                     string fileName = Path.GetFileName(zipPath);
+
                     var response = new StreamResponse(() => file, MimeTypes.GetMimeType(fileName));
+
                     return response.AsAttachment(fileName);
                 }
                 catch (Exception e)
@@ -564,9 +564,7 @@ namespace BCR
             };
 
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            // Retrieve a Comic File for download Webp reduced size  File based on settings in windowsform in comicrack
-            Get["/Comics/{id}/Sync/webp"] = x =>
+            Get["/Comics/{id}/Sync"] = x =>
             {
                 try
                 {
@@ -577,13 +575,14 @@ namespace BCR
                         return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
                     }
                     return BCR.GetSyncWebp(comic, new Guid(x.id), Response);
-
                 }
                 catch (Exception e)
                 {
                     return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
                 }
             };
+
+
 
         }
 
