@@ -6,6 +6,8 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+
+
 namespace ComicRackAPIServer
 {
   partial class MainForm
@@ -61,12 +63,17 @@ namespace ComicRackAPIServer
             this.buttonAddUser = new System.Windows.Forms.Button();
             this.comboBoxUsers = new System.Windows.Forms.ComboBox();
             this.tabPageMisc = new System.Windows.Forms.TabPage();
+            this.buttonSetSettings = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.comboBoxQuality = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.comboBoxSpeed = new System.Windows.Forms.ComboBox();
+            this.buttonClearSyncCache = new System.Windows.Forms.Button();
             this.buttonClearThumbnailsCache = new System.Windows.Forms.Button();
             this.labelCacheSize = new System.Windows.Forms.Label();
             this.buttonClearPageCache = new System.Windows.Forms.Button();
             this.tabPageAbout = new System.Windows.Forms.TabPage();
             this.webBrowserAbout = new System.Windows.Forms.WebBrowser();
-            this.buttonClearSyncCache = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageWebServer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -312,6 +319,11 @@ namespace ComicRackAPIServer
             // 
             // tabPageMisc
             // 
+            this.tabPageMisc.Controls.Add(this.buttonSetSettings);
+            this.tabPageMisc.Controls.Add(this.label8);
+            this.tabPageMisc.Controls.Add(this.comboBoxQuality);
+            this.tabPageMisc.Controls.Add(this.label7);
+            this.tabPageMisc.Controls.Add(this.comboBoxSpeed);
             this.tabPageMisc.Controls.Add(this.buttonClearSyncCache);
             this.tabPageMisc.Controls.Add(this.buttonClearThumbnailsCache);
             this.tabPageMisc.Controls.Add(this.labelCacheSize);
@@ -323,6 +335,77 @@ namespace ComicRackAPIServer
             this.tabPageMisc.TabIndex = 2;
             this.tabPageMisc.Text = "Misc.";
             this.tabPageMisc.UseVisualStyleBackColor = true;
+            // 
+            // buttonSetSettings
+            // 
+            this.buttonSetSettings.Location = new System.Drawing.Point(304, 95);
+            this.buttonSetSettings.Name = "buttonSetSettings";
+            this.buttonSetSettings.Size = new System.Drawing.Size(117, 32);
+            this.buttonSetSettings.TabIndex = 8;
+            this.buttonSetSettings.Text = "Set Settings";
+            this.buttonSetSettings.UseVisualStyleBackColor = true;
+            this.buttonSetSettings.Click += new System.EventHandler(this.ButtonSetSettingsClick);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(234, 34);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(173, 26);
+            this.label8.TabIndex = 7;
+            this.label8.Text = "0 (lower quality, lowest file size) \r\n100 (highest quality, higher file size)";
+            // 
+            // comboBoxQuality
+            // 
+            this.comboBoxQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxQuality.FormattingEnabled = true;
+            this.comboBoxQuality.Location = new System.Drawing.Point(437, 39);
+            this.comboBoxQuality.Name = "comboBoxQuality";
+            this.comboBoxQuality.Size = new System.Drawing.Size(50, 21);
+            this.comboBoxQuality.TabIndex = 6;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Enabled = false;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label7.Location = new System.Drawing.Point(3, 230);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(154, 39);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "ConversionSpeed:\r\n0 (fastest, lowest compression) \r\n9 (slower, best compression)\r" +
+    "\n";
+            // 
+            // comboBoxSpeed
+            // 
+            this.comboBoxSpeed.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSpeed.Enabled = false;
+            this.comboBoxSpeed.FormattingEnabled = true;
+            this.comboBoxSpeed.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.comboBoxSpeed.Location = new System.Drawing.Point(175, 245);
+            this.comboBoxSpeed.Name = "comboBoxSpeed";
+            this.comboBoxSpeed.Size = new System.Drawing.Size(50, 21);
+            this.comboBoxSpeed.TabIndex = 4;
+            // 
+            // buttonClearSyncCache
+            // 
+            this.buttonClearSyncCache.Location = new System.Drawing.Point(8, 95);
+            this.buttonClearSyncCache.Name = "buttonClearSyncCache";
+            this.buttonClearSyncCache.Size = new System.Drawing.Size(140, 23);
+            this.buttonClearSyncCache.TabIndex = 3;
+            this.buttonClearSyncCache.Text = "Clear Sync Cache";
+            this.buttonClearSyncCache.UseVisualStyleBackColor = true;
+            this.buttonClearSyncCache.Click += new System.EventHandler(this.ButtonClearSyncCacheClick);
             // 
             // buttonClearThumbnailsCache
             // 
@@ -376,16 +459,6 @@ namespace ComicRackAPIServer
             this.webBrowserAbout.TabIndex = 0;
             this.webBrowserAbout.Url = new System.Uri("", System.UriKind.Relative);
             // 
-            // buttonClearSyncCache
-            // 
-            this.buttonClearSyncCache.Location = new System.Drawing.Point(8, 95);
-            this.buttonClearSyncCache.Name = "buttonClearSyncCache";
-            this.buttonClearSyncCache.Size = new System.Drawing.Size(140, 23);
-            this.buttonClearSyncCache.TabIndex = 3;
-            this.buttonClearSyncCache.Text = "Clear Sync Cache";
-            this.buttonClearSyncCache.UseVisualStyleBackColor = true;
-            this.buttonClearSyncCache.Click += new System.EventHandler(this.ButtonClearSyncCacheClick);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -398,7 +471,7 @@ namespace ComicRackAPIServer
             this.MinimumSize = new System.Drawing.Size(410, 310);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ComicRackAPIServer 1.41";
+            this.Text = "ComicRackAPIServer 1.45";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl.ResumeLayout(false);
             this.tabPageWebServer.ResumeLayout(false);
@@ -407,6 +480,7 @@ namespace ComicRackAPIServer
             this.tabPageUsers.ResumeLayout(false);
             this.tabPageUsers.PerformLayout();
             this.tabPageMisc.ResumeLayout(false);
+            this.tabPageMisc.PerformLayout();
             this.tabPageAbout.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -441,5 +515,10 @@ namespace ComicRackAPIServer
     private System.Windows.Forms.TextBox textBoxUrlBase;
     private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button buttonClearSyncCache;
+        private System.Windows.Forms.ComboBox comboBoxSpeed;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboBoxQuality;
+        private System.Windows.Forms.Button buttonSetSettings;
     }
 }

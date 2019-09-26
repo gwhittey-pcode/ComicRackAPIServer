@@ -1,5 +1,4 @@
-﻿using FreeImageAPI;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Data.SQLite;
 using System.Diagnostics;
@@ -7,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-
+using Imazen.WebP;
 
 namespace ComicRackAPIServer
 {
@@ -18,7 +17,7 @@ namespace ComicRackAPIServer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.41";
+    private const string VERSION = "1.45";
 
     public string InstallFolder { get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); } }
 
@@ -52,8 +51,11 @@ namespace ComicRackAPIServer
             */
 
             ///////////////////////////////////////////////////////////
-            // Install the correct FreeImage.dll
-            if (!FreeImage.IsAvailable())
+            // Install the correct libweb.dll
+            /*
+             * 
+      
+      if (!FreeImage.IsAvailable())
       {
         System.IO.File.Copy(Path.Combine(InstallFolder, (Environment.Is64BitProcess ? "FreeImage.64bit.dll" : "FreeImage.32bit.dll")), Path.Combine(InstallFolder, "FreeImage.dll"), true);
       }
@@ -63,7 +65,8 @@ namespace ComicRackAPIServer
         MessageBox.Show("FreeImage.dll seems to be missing. Aborting.", "ComicRackAPIServer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
         return false;
       }
-      
+      */
+      System.IO.File.Copy(Path.Combine(InstallFolder, (Environment.Is64BitProcess ? "libwebp_x64.dll" : "libwebp_x86.dll")), Path.Combine(InstallFolder, "libwebp.dll"), true);
       ///////////////////////////////////////////////////////////
       // Install the correct SQLite.Interop.dll
       try

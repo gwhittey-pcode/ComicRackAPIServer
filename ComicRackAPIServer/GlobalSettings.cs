@@ -11,7 +11,9 @@ namespace BCR
     public string nancy_diagnostics_password { get; set; }
     public int webserver_port { get; set; }
     public string url_base { get; set; }
-            
+    public int webp_speed { get; set; }
+    public int webp_quality { get; set; }
+
     private Dictionary<string, string> mSettings = new Dictionary<string, string>();
     // TODO: maximum image size should be per requesting target device instead of using one global setting.
 
@@ -22,6 +24,8 @@ namespace BCR
       nancy_diagnostics_password = "diagnostics";
       webserver_port = 8080;
       url_base = "tablet";
+      webp_quality = 20;
+      webp_speed = 5;
     }
     
     /// <summary>
@@ -43,7 +47,9 @@ namespace BCR
       nancy_request_tracing = GetBoolean("nancy_request_tracing", false);
       nancy_diagnostics_password = GetString("nancy_diagnostics_password", "diagnostics");
       url_base = GetString("url_base", "tablet");
-    }
+      webp_quality = GetInt32("webp_quality", 20);
+      webp_speed = GetInt32("webp_speed", 5);
+        }
     
     public void Save()
     {
@@ -53,7 +59,11 @@ namespace BCR
       Set("nancy_diagnostics_password", nancy_diagnostics_password.ToString());
       Set("url_base", url_base);
     }
-    
+    public void Save_Webp_Settings()
+        {
+            Set("webp_speed", webp_speed.ToString());
+            Set("webp_quality", webp_quality.ToString());
+        }
     
     public string GetString(string key, string defaultValue)
     {
