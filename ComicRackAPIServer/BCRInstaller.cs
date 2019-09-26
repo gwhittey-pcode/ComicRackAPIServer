@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-
+using Imazen.WebP;
 
 namespace ComicRackAPIServer
 {
@@ -51,8 +51,10 @@ namespace ComicRackAPIServer
             */
 
             ///////////////////////////////////////////////////////////
-            // Install the correct FreeImage.dll
+            // Install the correct libweb.dll
             /*
+             * 
+      
       if (!FreeImage.IsAvailable())
       {
         System.IO.File.Copy(Path.Combine(InstallFolder, (Environment.Is64BitProcess ? "FreeImage.64bit.dll" : "FreeImage.32bit.dll")), Path.Combine(InstallFolder, "FreeImage.dll"), true);
@@ -64,6 +66,7 @@ namespace ComicRackAPIServer
         return false;
       }
       */
+      System.IO.File.Copy(Path.Combine(InstallFolder, (Environment.Is64BitProcess ? "libwebp_x64.dll" : "libwebp_x86.dll")), Path.Combine(InstallFolder, "libwebp.dll"), true);
       ///////////////////////////////////////////////////////////
       // Install the correct SQLite.Interop.dll
       try
