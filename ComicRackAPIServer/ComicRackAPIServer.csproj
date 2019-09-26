@@ -158,7 +158,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WebPWrapper.cs" />
     <None Include="about.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
