@@ -28,3 +28,6 @@
 
 ##[1.44]
 	-change some function codes around
+
+##[1.45]
+	-Made so can be run in non admin mode as long as command is run

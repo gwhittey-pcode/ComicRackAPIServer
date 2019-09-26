@@ -338,7 +338,7 @@ namespace ComicRackAPIServer
             // 
             // buttonSetSettings
             // 
-            this.buttonSetSettings.Location = new System.Drawing.Point(332, 54);
+            this.buttonSetSettings.Location = new System.Drawing.Point(304, 95);
             this.buttonSetSettings.Name = "buttonSetSettings";
             this.buttonSetSettings.Size = new System.Drawing.Size(117, 32);
             this.buttonSetSettings.TabIndex = 8;
@@ -349,7 +349,7 @@ namespace ComicRackAPIServer
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(196, 8);
+            this.label8.Location = new System.Drawing.Point(234, 34);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(173, 26);
             this.label8.TabIndex = 7;
@@ -359,7 +359,7 @@ namespace ComicRackAPIServer
             // 
             this.comboBoxQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxQuality.FormattingEnabled = true;
-            this.comboBoxQuality.Location = new System.Drawing.Point(399, 13);
+            this.comboBoxQuality.Location = new System.Drawing.Point(437, 39);
             this.comboBoxQuality.Name = "comboBoxQuality";
             this.comboBoxQuality.Size = new System.Drawing.Size(50, 21);
             this.comboBoxQuality.TabIndex = 6;
@@ -369,7 +369,7 @@ namespace ComicRackAPIServer
             this.label7.AutoSize = true;
             this.label7.Enabled = false;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label7.Location = new System.Drawing.Point(99, 198);
+            this.label7.Location = new System.Drawing.Point(3, 230);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(154, 39);
             this.label7.TabIndex = 5;
@@ -392,7 +392,7 @@ namespace ComicRackAPIServer
             "7",
             "8",
             "9"});
-            this.comboBoxSpeed.Location = new System.Drawing.Point(294, 216);
+            this.comboBoxSpeed.Location = new System.Drawing.Point(175, 245);
             this.comboBoxSpeed.Name = "comboBoxSpeed";
             this.comboBoxSpeed.Size = new System.Drawing.Size(50, 21);
             this.comboBoxSpeed.TabIndex = 4;
@@ -471,7 +471,7 @@ namespace ComicRackAPIServer
             this.MinimumSize = new System.Drawing.Size(410, 310);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ComicRackAPIServer 1.44";
+            this.Text = "ComicRackAPIServer 1.45";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl.ResumeLayout(false);
             this.tabPageWebServer.ResumeLayout(false);

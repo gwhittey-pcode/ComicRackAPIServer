@@ -535,6 +535,7 @@ namespace BCR
             }
             return comics.AsSeries();
         }
+
         public static Response GetSyncWebp(Comic comic, Guid id, IResponseFormatter response)
         {
             

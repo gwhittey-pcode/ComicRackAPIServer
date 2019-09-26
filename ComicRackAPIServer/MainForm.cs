@@ -201,7 +201,12 @@ namespace ComicRackAPIServer
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Sorry!, you must be running ComicRack with administrator privileges.");
+                    Database.Instance.GlobalSettings.webserver_port = actualPort.HasValue ? actualPort.Value : 8080;
+                    Database.Instance.GlobalSettings.url_base = textBoxUrlBase.Text;
+                    Database.Instance.GlobalSettings.Save();
+
+                    StartService();
+                    //  System.Windows.Forms.MessageBox.Show("Sorry!, you must be running ComicRack with administrator privileges.");
                 }
             }
         }
