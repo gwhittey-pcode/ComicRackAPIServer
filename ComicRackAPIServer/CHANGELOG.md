@@ -31,3 +31,6 @@
 
 ##[1.45]
 	-Made so can be run in non admin mode as long as command is run
+	
+	##[1.45.1]
+		-fixed a url bug
