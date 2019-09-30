@@ -392,7 +392,7 @@ namespace BCR
                 //FIBITMAP dib = FreeImage.CreateFromBitmap(bitmap);
                 //bitmap.Dispose();
                 //bitmap = null;
-                stream.Dispose();
+                //stream.Dispose();
                 stream = new MemoryStream();
                 bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
                 bitmap = null;
