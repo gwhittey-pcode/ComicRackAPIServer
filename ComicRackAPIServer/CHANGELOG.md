@@ -34,3 +34,5 @@
 	
 	##[1.45.1]
 		-fixed a url bug
+	##[1.45.2]
+		-fixed a bug ing BCR.GetPageImage
