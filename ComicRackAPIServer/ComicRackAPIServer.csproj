@@ -201,6 +201,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="postbuild.bat" />
     <None Include="Program.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -224,14 +225,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT ($(ConfigurationName)) == (Debug) GOTO END
-cd $(ProjectDir)
-copy /y bin\debug\ComicRackAPIServer.dll C:\Users\gwhittey\projects\shared\ComicRackAPIServer
-copy /y bin\debug\Package.ini C:\Users\gwhittey\projects\shared\ComicRackAPIServer
-copy /y bin\debug\Program.py C:\Users\gwhittey\projects\shared\ComicRackAPIServer
-copy /y bin\debug\about.html C:\Users\gwhittey\projects\shared\ComicRackAPIServer
-
-:END</PostBuildEvent>
+    <PostBuildEvent>$(ProjectDir)postbuild.bat "$(ProjectDir)" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

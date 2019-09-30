@@ -104,7 +104,7 @@ namespace ComicRackAPIServer
             else
             {
                 buttonStart.Text = "Stop";
-                labelStatus.Text = "The api server is running.\nUse http://" + LocalIPAddress() + ":" + textBoxPort.Text + "\nNB in ComicRackReader server settings: don't forget to allow ComicRack in your firewall.";
+                labelStatus.Text = "The api server is running.\nUse http://" + LocalIPAddress() + ":" + textBoxPort.Text + textBoxUrlBase.Text + "\nNB in ComicRackReader server settings: don't forget to allow ComicRack in your firewall.";
             }
             System.Windows.Input.Mouse.SetCursor(null);
         }
