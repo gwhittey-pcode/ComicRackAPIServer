@@ -38,3 +38,6 @@
 		-fixed a bug ing BCR.GetPageImage
 	##[1.45.3]
 		-fixed typoc
+	##[1.45.4]
+		-Removed /tablet from url stuff as it not need but can still be used 
+		if someone also wants to add webpages to the server
