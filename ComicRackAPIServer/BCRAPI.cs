@@ -638,61 +638,66 @@ namespace BCR
                     }
                 }
                 comic_xml.Seek(0, SeekOrigin.Begin);
-                var ms = new MemoryStream();
-               
-                using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
+                using (var ms = new MemoryStream())
                 {
-                    var demoFile = zipArchive.CreateEntry("ComicInfo.xml");
-                    using(var entreyStream = demoFile.Open())
+                    using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
                     {
-                        comic_xml.CopyTo(entreyStream);
-                    }
-                    for (int i = 0; i <= comic.PageCount - 1; i++)
-                    {
-                        MemoryStream stream = null;
-                        string org_filename = string.Format("{0}-p{1}.jpg", id, i);
-                        stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
-
-                        if (stream == null)
+                        var demoFile = zipArchive.CreateEntry("ComicInfo.xml");
+                        using(var entreyStream = demoFile.Open())
                         {
-                            // Image is not in the cache, get it via ComicRack.
-                            var bytes = BCR.GetPageImageBytes(id, i);
-                            if (bytes == null)
+                            comic_xml.CopyTo(entreyStream);
+                        }
+                        for (int i = 0; i <= comic.PageCount - 1; i++)
+                        {
+                            MemoryStream stream = null;
+                            string org_filename = string.Format("{0}-p{1}.jpg", id, i);
+                            stream = ImageCache.Instance.LoadFromCache(org_filename, false, false);
+
+                            if (stream == null)
                             {
-                                return HttpStatusCode.NotFound;
+                                // Image is not in the cache, get it via ComicRack.
+                                var bytes = BCR.GetPageImageBytes(id, i);
+                                if (bytes == null)
+                                {
+                                    return HttpStatusCode.NotFound;
+                                }
+
+                                stream = new MemoryStream(bytes);
+
+                                // Always save the original page to the cache
+                                ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
                             }
 
-                            stream = new MemoryStream(bytes);
+                            stream.Seek(0, SeekOrigin.Begin);
+                            Bitmap image = new Bitmap(stream);
+                            var result = i.ToString().PadLeft(5, '0');
+                            string webpFileName = string.Format("P{0}.webp", result);
+                            string combined = Path.Combine(extractPath, webpFileName);
+                            var entry = zipArchive.CreateEntry(webpFileName, CompressionLevel.Fastest);
+                            Int32 webpquality = Database.Instance.GlobalSettings.webp_quality;
 
-                            // Always save the original page to the cache
-                            ImageCache.Instance.SaveToCache(org_filename, stream, false, false);
-                        }
-                        stream.Seek(0, SeekOrigin.Begin);
-                        Bitmap image = new Bitmap(stream);
-                        var result = i.ToString().PadLeft(5, '0');
-                        string webpFileName = string.Format("P{0}.webp", result);
-                        string combined = Path.Combine(extractPath, webpFileName);
-                        var entry = zipArchive.CreateEntry(webpFileName, CompressionLevel.Fastest);
-                        Int32 webpquality = Database.Instance.GlobalSettings.webp_quality;
-
-                        using (var entryStream = entry.Open())
-                        {
+                            using (var entryStream = entry.Open())
+                            {
                              
-                            var encoder = new SimpleEncoder();
-                            encoder.Encode(image, entryStream, webpquality);
+                                var encoder = new SimpleEncoder();
+                                encoder.Encode(image, entryStream, webpquality);
+                            }
+                            stream.Dispose();
                         }
-                        stream.Dispose();
                     }
-                }
+                 
                     ImageCache.Instance.SaveToCache(fileName, ms, false, true);
-                    //cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var resp = new StreamResponse(() => ms, "application/zip");
-                ms.Dispose();
+                    cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
+                   
+                    StreamResponse resp = new StreamResponse(() => cbz_stream, "application/zip");
                     return resp
                        .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
                        .AsAttachment(fileName, "application/zip");
-               
+                }
+
+                
+                
+                
             }
             else
             {
