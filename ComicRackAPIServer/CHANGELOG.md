@@ -40,3 +40,6 @@
 		-fixed typoc
 	##[1.45.4]
 		-more typos
+##[1.46]
+	-Change Sync functions to create in memory speeding up
+	the creating the zip file

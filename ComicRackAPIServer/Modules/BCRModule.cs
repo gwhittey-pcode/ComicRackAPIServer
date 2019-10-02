@@ -158,7 +158,7 @@ namespace BCR
                     return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
                 }
             };
-
+           
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve the original size (in pixels) of the requested page.
             Get["/Comics/{id}/Pages/{page}/size"] = x =>
@@ -582,6 +582,23 @@ namespace BCR
                 }
             };
 
+            Get["/Comics/{id}/Sync/Webp2"] = x =>
+            {
+                try
+                {
+                    BCRUser user = (BCRUser)this.Context.CurrentUser;
+                    Comic comic = BCR.GetComic(user, new Guid(x.id));
+                    if (comic == null)
+                    {
+                        return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+                    }
+                    return BCR.GetSyncWebpStream(comic, new Guid(x.id), Response);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
 
 
         }
