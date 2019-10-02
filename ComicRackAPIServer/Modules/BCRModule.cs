@@ -564,7 +564,7 @@ namespace BCR
             };
 
 
-            Get["/Comics/{id}/Sync/Webp"] = x =>
+            Get["/Comics/{id}/Sync/Webp2"] = x =>
             {
                 try
                 {
@@ -582,7 +582,7 @@ namespace BCR
                 }
             };
 
-            Get["/Comics/{id}/Sync/Webp2"] = x =>
+            Get["/Comics/{id}/Sync/Webp"] = x =>
             {
                 try
                 {
