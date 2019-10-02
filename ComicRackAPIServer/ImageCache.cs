@@ -65,7 +65,7 @@ namespace BCR
 
           maximum_imagesize = 5*1024*1024; // IOS5 : 5 megapixels
                     
-          use_progressive_jpeg = true;
+          use_progressive_jpeg = false;//not using this since it was for iOS and we are not relying on that for image processiing
           progressive_jpeg_size_threshold = 2*1024*1024; // 2 megapixels
           progressive_jpeg_quality = 90; // 10..100 %
           
