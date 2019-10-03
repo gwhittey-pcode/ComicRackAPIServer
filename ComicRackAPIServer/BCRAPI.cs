@@ -638,9 +638,8 @@ namespace BCR
                     }
                 }
                 comic_xml.Seek(0, SeekOrigin.Begin);
-                using (var ms = new MemoryStream())
-                {
-                    using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
+                var ms = new MemoryStream();
+                using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
                     {
                         var demoFile = zipArchive.CreateEntry("ComicInfo.xml");
                         using(var entreyStream = demoFile.Open())
@@ -686,23 +685,19 @@ namespace BCR
                         }
                     }
                  
-                    ImageCache.Instance.SaveToCache(fileName, ms, false, true);
-                    cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
-                   
-                    StreamResponse resp = new StreamResponse(() => cbz_stream, "application/zip");
-                    return resp
-                       .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
-                       .AsAttachment(fileName, "application/zip");
-                }
+                ImageCache.Instance.SaveToCache(fileName, ms, false, true);
+                ms.Seek(0, SeekOrigin.Begin);
+                StreamResponse resp = new StreamResponse(() => ms, "application/zip");
+                return resp
+                    .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
+                    .AsAttachment(fileName, "application/zip");
 
                 
-                
-                
+
             }
             else
             {
                 StreamResponse resp = new StreamResponse(() => cbz_stream, "application/zip");
-                cbz_stream.Dispose();
                 return resp
                    .WithHeader("Content-Disposition", "attachment; filename=" + fileName)
                    .AsAttachment(fileName, "application/zip");
