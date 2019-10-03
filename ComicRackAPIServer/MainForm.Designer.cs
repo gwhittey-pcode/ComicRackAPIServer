@@ -471,7 +471,7 @@ namespace ComicRackAPIServer
             this.MinimumSize = new System.Drawing.Size(410, 310);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ComicRackAPIServer 1.46.1";
+            this.Text = "ComicRackAPIServer 1.46.2";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl.ResumeLayout(false);
             this.tabPageWebServer.ResumeLayout(false);
