@@ -43,3 +43,6 @@
 ##[1.46]
 	-Change Sync functions to create in memory speeding up
 	the creating the zip file
+	
+	##[1.46.2]
+		-Fixed bug that was sending back empty cbz
