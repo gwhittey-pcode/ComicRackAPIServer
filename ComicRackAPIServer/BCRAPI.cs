@@ -16,7 +16,7 @@ using System.IO;
 using System.Linq;
 using Imazen.WebP;
 using System.IO.Compression;
-
+using System.Windows.Forms;
 
 namespace BCR
 {
@@ -500,7 +500,7 @@ namespace BCR
             var zipPath = comic.FilePath;
             string extractPath = tmpPath + "\\" + comic.Id + "\\";
             extractPath = Path.GetFullPath(extractPath);
-
+            var encoder = new SimpleEncoder();
             // Check if original image is in the cache.
 
             string fileName = Path.GetFileName(zipPath);
@@ -560,8 +560,15 @@ namespace BCR
 
                     using (var saveImageStream = System.IO.File.Open(combined, FileMode.Create))
                     {
-                        var encoder = new SimpleEncoder();
-                        encoder.Encode(image, saveImageStream, webpquality);
+                        try
+                        {
+                            
+                            encoder.Encode(image, saveImageStream, webpquality);
+                        }
+                        catch //(Exception e)
+                        {
+                            // MessageBox.Show(e.ToString());
+                        }
                     }
                     stream.Dispose();
 
@@ -621,6 +628,7 @@ namespace BCR
             MemoryStream cbz_stream = null;
             cbz_stream = ImageCache.Instance.LoadFromCache(fileName, false, true);
             var comic_xml = new MemoryStream();
+            var encoder = new SimpleEncoder();
             if (cbz_stream == null)
             {
                 //Opening ComicArchive and getting ComicInfo.xml for use in new cbz file
@@ -677,10 +685,15 @@ namespace BCR
 
                             using (var entryStream = entry.Open())
                             {
-                             
-                                var encoder = new SimpleEncoder();
+
+                            try {  
                                 encoder.Encode(image, entryStream, webpquality);
                             }
+                            catch //(Exception e)
+                            {
+                               // MessageBox.Show(e.ToString());
+                            }
+                        }
                             stream.Dispose();
                         }
                     }
